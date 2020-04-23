@@ -1,7 +1,8 @@
-
 import ply.lex as lex
 import ply.yacc as yacc
 import sys
+import speech_recognition as sr
+import pyttsx3 
 
 tokens=[
         'INT',
@@ -21,7 +22,7 @@ t_MINUS=r'\-'
 t_MULTIPLY=r'\*'
 t_DIVIDE=r'\/'
 t_EQUALS=r'\='
-
+t_ignore=r' '
 
 def t_FLOAT(t):
     r'\d+\.\d+'
@@ -38,8 +39,6 @@ def t_PRINT(t):
     r'["print"][" "a-zA-Z_#_0-9]*'
     t.value = t.value.lstrip("print")
     t.value = t.value.lstrip(" ")
-   # if (t.value == 1):
-     #   t.value=int(t.value)
     t.type='PRINT'
     return t
 
@@ -50,7 +49,7 @@ def t_Name(t):
     t.type='NAME'
     return t
 
-t_ignore=r' '
+
 
 def t_error(t):
     print('Illegal characters!')
@@ -59,15 +58,12 @@ def t_error(t):
 lexer= lex.lex()
 precedence=(
         
-        ('left','PLUS','MINUS'),
+        ('lef t','PLUS','MINUS'),
         ('left','MULTIPLY','DIVIDE')
         
         )
     
 def p_calc(p):
-    #calc is p[0]
-    #var assign p[1]
-    #empty p[2]
    '''
    calc : expression
         | var_assign
@@ -164,12 +160,26 @@ def run(p):
     
     else:
         return p
-    
-while True:
+
+while True:   
+    r = sr.Recognizer()     
+    with sr.Microphone()as source:
+        
+        r.adjust_for_ambient_noise(source, duration=2)
+        print('You Can Code')
+        audio = r.listen(source)
     try:
-        s = input('>> ')
+        text = r.recognize_google(audio)
+        print ('You said: {}'.format(text))
+        aInput = text.lower()
+        
         
     except EOFError:
         break
-    parser.parse(s)
+    except:
+        print('we couldnt hear you')
+    if aInput == 'exit':
+        quit()
+    else:
+        parser.parse(aInput)
     
