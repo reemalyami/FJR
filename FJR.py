@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 25 04:00:14 2020
-
-@author: jawharah
-"""
 
 import ply.lex as lex
 import ply.yacc as yacc
